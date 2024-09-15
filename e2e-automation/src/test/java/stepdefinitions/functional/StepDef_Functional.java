@@ -17,10 +17,10 @@ public class StepDef_Functional {
         baseStepDef.setDriver(browserName);  // Use the BaseStepDef instance
     }
 
-    @Given("^User open the url$")
-    public void openUrl() {
+    @Given("^User open the url \"([^\"]*)\"$")
+    public void openUrl(String url) {
         if (baseStepDef.driver != null) {
-            baseStepDef.openURL("https://landing-page.kfapps.com/");
+            baseStepDef.openURL(url);
         } else {
             throw new IllegalStateException("Driver is not initialized. Please call initializeBrowser() first.");
         }
