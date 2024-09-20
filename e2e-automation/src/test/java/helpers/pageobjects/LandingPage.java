@@ -24,4 +24,7 @@ public class LandingPage extends BasePage {
 
     @FindBy(xpath = "//a[@id='proceed-link']")
     WebElement link_ToContinue;
+
+    @FindBy(xpath = "//textarea[@name='q']")
+    WebElement ip_txtSearch;
 }

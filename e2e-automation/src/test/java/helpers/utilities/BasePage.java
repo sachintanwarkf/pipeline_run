@@ -23,6 +23,7 @@ public class BasePage {
     private WebDriver driver;
     Actions actions;
 
+
     public BasePage(WebDriver driver) {
         if (driver == null) {
             throw new IllegalArgumentException("Driver instance cannot be null");
@@ -173,4 +174,41 @@ public class BasePage {
         }
     }
 
+    public <T> boolean isChecked(T elementAttr, String action) {
+        WebElement element;
+        try {
+            element = getElement(elementAttr);
+            switch (action) {
+                case "checked":
+                    waitForActions(element, "checked");
+                    break;
+                case "unchecked":
+                    waitForActions(element, "unchecked");
+                    break;
+            }
+            return element.isSelected();
+        } catch (Exception e) {
+            LOGGER.error("Unable to verify that element is selected, error message: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public <T> boolean isVisible(T elementAttr, String action) {
+        WebElement element;
+        try {
+            element = getElement(elementAttr);
+            switch (action) {
+                case "visible":
+                    waitForActions(element, "visible");
+                    break;
+                case "invisible":
+                    waitForActions(element, "invisible");
+                    break;
+            }
+            return element.isDisplayed();
+        } catch (Exception e) {
+            LOGGER.error("Unable to verify that element is visible, error message: " + e.getMessage());
+            return false;
+        }
+    }
 }

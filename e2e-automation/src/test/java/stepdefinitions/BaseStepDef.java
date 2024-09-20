@@ -40,6 +40,7 @@ public class BaseStepDef {
         }
     }
 
+
     public WebDriver getCurrentDriverInstance(String browserName) {
         WebDriver driver = null;
         switch (browserName.toLowerCase()) {
