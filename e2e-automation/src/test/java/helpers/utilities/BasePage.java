@@ -51,7 +51,6 @@ public class BasePage {
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
     }
 
-
     public void waitForActions(WebElement element,String action)
     {
         Wait wait=new FluentWait<>(driver).withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofSeconds(5));
@@ -76,6 +75,20 @@ public class BasePage {
         return fluentWaitFindElements(locator, 30);
     }
 
+    public <T> boolean is(T elementAttr)
+    {
+        WebElement element;
+        try {
+            element=getElement(elementAttr);
+            waitForActions(element,"visible");
+            return element.isDisplayed();
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Unable to verify that element is visible, error message: "+e.getMessage());
+            return false;
+        }
+    }
     public <T> boolean isVisible(T elementAttr)
     {
         WebElement element;
@@ -208,6 +221,20 @@ public class BasePage {
             return element.isDisplayed();
         } catch (Exception e) {
             LOGGER.error("Unable to verify that element is visible, error message: " + e.getMessage());
+            return false;
+        }
+    }
+    public <T> boolean isClickable(T elementAttr, String action) {
+        WebElement element;
+        try {
+            element = getElement(elementAttr);
+            if(action=="clickable")
+            {
+                waitForActions(element, "click");
+            }
+            return element.isDisplayed();
+        } catch (Exception e) {
+            LOGGER.error("Unable to verify that element is clickable, error message: " + e.getMessage());
             return false;
         }
     }

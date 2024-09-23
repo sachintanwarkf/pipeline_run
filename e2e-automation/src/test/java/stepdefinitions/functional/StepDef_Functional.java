@@ -81,6 +81,18 @@ public class StepDef_Functional {
         }
     }
 
+    @Then("^User verify the \"([^\"]*)\" is (CLICKABLE) on \"([^\"]*)\"$")
+    public void verify_element_ISClickable(String elementName, String visibility, PageEnum pageName) throws IllegalAccessException {
+        BasePage basePage = PageInstanceFactory.getPageInstance(pageName, baseStepDef.driver);  // Use the driver from BaseStepDef
+        WebElement element = baseStepDef.getElementUsingReflection(basePage, elementName);
+        if ("CLICKABLE".equals(visibility)) {
+            basePage.isClickable(element,"clickable");
+
+        } else {
+            throw new IllegalArgumentException("Invalid visibility state: " + visibility);
+        }
+    }
+
     @Then("^User verify the \"([^\"]*)\" is (CHECKED|UNCHECKED) on \"([^\"]*)\"$")
     public void verify_element_isChecked(String elementName, String visibility, PageEnum pageName) throws IllegalAccessException {
         BasePage basePage = PageInstanceFactory.getPageInstance(pageName, baseStepDef.driver);  // Use the driver from BaseStepDef
