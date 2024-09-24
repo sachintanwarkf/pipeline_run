@@ -8,6 +8,8 @@ Feature: To verify Project Page
     Then User clicks "Tab_Project" on "PROJECT_PAGE"
 
   Scenario: To Verify all elements are visible in project page
+    Then User verify the "Tab_Project" is VISIBLE on "PROJECT_PAGE"
+    Then User clicks "Tab_Project" on "PROJECT_PAGE"
     Then User verify the "Label_KFSelect" is VISIBLE on "PROJECT_PAGE"
     Then User verify the "ChkBox_KFSelect" is CLICKABLE on "PROJECT_PAGE"
     Then User verify the "Label_KFAssess" is VISIBLE on "PROJECT_PAGE"

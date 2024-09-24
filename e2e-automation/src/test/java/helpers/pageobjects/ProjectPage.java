@@ -19,10 +19,10 @@ public class ProjectPage extends BasePage {
     @FindBy(id = "Projects-1")
     WebElement Tab_Project;
 
-    @FindBy(xpath = "//div[@class=\"cardContainer\"]")
+    @FindBy(xpath = "//div[@class=\"card-container\"]")
     WebElement Card_Container;
 
-    @FindBy(xpath = "//p[@class=\"title\"]")
+    @FindBy(xpath = "//div[@class=\"title\"]")
     WebElement Label_ProjectName;
 
     @FindBy(xpath = "//input[@id=\"select\"]")
@@ -31,46 +31,46 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath="//label[@for='select']")
     WebElement Label_KFSelect;
 
-    @FindBy(xpath = "//input[@id=\"assess\"]")
+        @FindBy(xpath = "//input[@id=\"assess\"]")
     WebElement ChkBox_KFAssess;
 
     @FindBy(xpath="//label[@for='assess']")
     WebElement Label_KFAssess;
 
-    @FindBy(xpath = "//div[.='Client Administered']")
+    @FindBy(xpath = "//div[@id='serviceType']")
     WebElement Label_Administered;
 
-    @FindBy(xpath = "//p[@class='activeText']")
+    @FindBy(xpath = "//p[@class='active-text']")
     WebElement Label_ActiveStatus;
 
-    @FindBy(xpath = "//p[@class='engagementCodeTxt']")
+    @FindBy(xpath = "//p[@class='engagement-code-txt']")
     WebElement Label_EngagementCode;
 
-    @FindBy(xpath = "//p[@class='engagementCodeTxt']")
+    @FindBy(xpath = "//p[@class='participant']")
     WebElement Label_NumberOfParticipants;
 
-    @FindBy(xpath = "//span[.=\"1 billable\"]']")
+    @FindBy(xpath = "//span[.='3 billable ']")
     WebElement Label_Billable;
 
-    @FindBy(xpath = "//span[.=\"1 non-billable\"]")
+    @FindBy(xpath = "//span[.='1 non-billable']")
     WebElement Label_NonBillable;
 
-    @FindBy(xpath = "//p[@class=\"potentialText\"]")
+    @FindBy(xpath = "//p[@class='potential-text']")
     WebElement Label_PontentialLevel;
 
-    @FindBy(xpath = "//span[@class=\"dateTxt\"]")
+    @FindBy(xpath = "//span[@class='date-txt']")
     WebElement Label_CreatedDate;
 
-    @FindBy(xpath = "//div[.='KF ENTRY']")
+    @FindBy(xpath = "//div[.='KF Entry']")
     WebElement Label_ProjectType;
 
-    @FindBy(xpath = "//div[.='KF Assess']")
+        @FindBy(xpath = "//div[.='KF Assess']")
     WebElement Label_ProductType;
 
-    @FindBy(xpath = "(//span[@class=\"dateTxt\"])[2]")
+    @FindBy(xpath = "(//span[@class=\"date-txt\"])[2]")
     WebElement Label_AddOns;
 
-    @FindBy(xpath = "//a[@id=\"manageProject\"])[1]")
+    @FindBy(xpath = "(//a[@id=\"manageProject\"])[1]")
     WebElement  Link_ViewDetails;
 
 
