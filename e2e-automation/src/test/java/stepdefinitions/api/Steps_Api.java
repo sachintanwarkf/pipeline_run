@@ -3,36 +3,60 @@ package stepdefinitions.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import helpers.utilities.ConfigProperties;
+import helpers.utilities.db.DbApiComparatorClass;
+import helpers.utilities.db.ProjectDataFetcher;
+import helpers.utilities.db.DbHandler;
 import io.cucumber.java.en.*;
-import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.awaitility.Awaitility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
+import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Steps_Api {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Steps_Api.class);
 
     private RequestSpecification requestSpec;
     private Response response;
     private String endpoint;
     Map<String, Object> responseMap;
     private List<Map<String, Object>> responseList;
+    private String responseString;
+    ConfigProperties cf=new ConfigProperties();
+    private DbHandler db = new DbHandler();
+    ProjectDataFetcher dataFetcher;
+    Connection connection;
+    Map<Object, Map<String, Object>> projectDataMap;
 
-    @Given("^Set the base URI to \"([^\"]*)\"$")
-    public void setBaseURI(String baseURI) {
+
+    @Given("^Set the base URI$")
+    public void setBaseURI() {
+        String baseURI = cf.getProperty("BASE_URI");
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.baseURI = baseURI;
         requestSpec = new RequestSpecBuilder().build(); // Initialize requestSpec
+        LOGGER.info("Base Uri: "+baseURI);
     }
 
     @Then("^Set the end point to \"([^\"]*)\"$")
-    public void setEndPoint(String endPoint) {
+    public void setEndPoint(String project) {
+        String configPropertyValue="endpoint_"+project;
+        String endPoint = cf.getProperty(configPropertyValue);
         endpoint = endPoint;
+        LOGGER.info("End point: "+endPoint);
     }
 
     @When("^Add path parameters with keyword \"([^\"]*)\" and value \"([^\"]*)\"$")
@@ -64,6 +88,22 @@ public class Steps_Api {
         requestSpec = requestSpec.body(bodyObject);
     }
 
+    @When("^Add body from file: \"([^\"]*)\"$")
+    public void addBodyFromJsonFile(String fileName) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String filePath = "";
+        if(fileName.contentEquals("Project Type Distribution")){
+            filePath=System.getProperty("user.dir")+"/src/test/resources/testDataResources/api/body/project_type_distribution.json";
+        } else if(fileName.contentEquals("Project Participant Distribution")){
+            filePath=System.getProperty("user.dir")+"/src/test/resources/testDataResources/api/body/project_participant_distribution.json";
+        } else if(fileName.contentEquals("Sp Norms Distribution")){
+            filePath=System.getProperty("user.dir")+"/src/test/resources/testDataResources/api/body/norms_type_distribution.json";
+        }
+        File jsonFile = new File(filePath);
+        Object bodyObject = objectMapper.readValue(jsonFile, Object.class);
+        requestSpec = requestSpec.body(bodyObject);
+    }
+
     @When("^Add Request Body Type: \"([^\"]*)\"$")
     public void addRequestBody(String bodyType) throws JsonProcessingException {
         requestSpec = requestSpec.contentType(bodyType);
@@ -86,6 +126,8 @@ public class Steps_Api {
 
     @When("^Send a (GET|POST|PUT|DELETE) request$")
     public void sendRequest(String method) {
+        LOGGER.info("Api request: "+requestSpec);
+
         switch (method.toUpperCase()) {
             case "GET":
                 response = RestAssured.given(requestSpec).get(endpoint);
@@ -110,72 +152,83 @@ public class Steps_Api {
         String responseBody = response.getBody().asString();
         try {
             responseMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>() {});
-            System.out.println("Response as Map: " + responseMap);
+            LOGGER.info("Response stored as Map: {}", responseMap);
         } catch (IOException e) {
             try {
                 responseList = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Object>>>() {});
-                System.out.println("Response as List of Maps: " + responseList);
+                LOGGER.info("Response stored as List of Maps: {}", responseList);
             } catch (IOException ex) {
-                System.err.println("Error parsing response as Map or List of Maps");
+                LOGGER.error("Error parsing response as Map or List of Maps: {}", ex.getMessage());
                 throw ex;
             }
         }
     }
 
-    @Then("^Verify response using keyword:\"([^\"]*)\" and value:\"([^\"]*)\"$")
-    public void verifyResponseWithKeysAndValues(String keyword, String value) {
-        Object result = null;
-        String dataType = "";
-        if (responseMap != null) {
-            result = findValue(responseMap, keyword);
-            dataType = getResultDataType(result);
-        } else if (responseList != null) {
-            result = findValueInList(responseList, keyword);
-            dataType = getResultDataType(result);
+    @Then("^Store the response as a list of maps$")
+    public void storeResponseAsListOfMaps() {
+        ObjectMapper objectMapper = new ObjectMapper();  // Jackson ObjectMapper for JSON parsing
+        String responseBody = response.getBody().asString();  // Get the response body as a String
+
+        try {
+            // Parse the JSON response into List<Map<String, Object>>
+            responseList = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Object>>>(){});
+            LOGGER.info("Response stored as List<Map<String, Object>>: {}", responseList);
+        } catch (IOException e) {
+            LOGGER.error("Failed to parse response into List<Map<String, Object>>: {}", e.getMessage());
         }
-        if (result != null) {
-            System.out.println("Datatype: " + dataType);
-            Assert.assertEquals("Response value does not match expected value.", value, result.toString());
-        } else {
-            Assert.fail("Keyword not found in the response.");
-        }
+    }
+
+    @Then("^Store the response as a string$")
+    public void storeResponseAsString() {
+        String responseBody = response.getBody().asString();
+        this.responseString = responseBody;
+        LOGGER.info("Response stored as String: {}", responseString);
+    }
+
+    @Then("^User checks (.+) in response$")
+    public void verifyResponseContains(String expectedSubstring) {
+        Assert.assertNotNull(responseString, "Response string is null or empty.");
+        Assert.assertTrue(responseString.contains(expectedSubstring),
+                "Expected substring not found in the response.");
+        LOGGER.info("Verified that the response contains: {}", expectedSubstring);
     }
 
     @Then("^Verify response status code is (\\d+)$")
     public void verifyStatusCode(int statusCode) {
-        response.then().statusCode(statusCode);
+        // Wait for the response and verify the status code
+        Awaitility.await()
+                .atMost(180, TimeUnit.SECONDS) // Wait up to 180 seconds
+                .pollInterval(1, TimeUnit.SECONDS) // Check every second
+                .until(() -> response.getStatusCode() == statusCode); // Wait until status code matches
+
+        int actualStatusCode = response.getStatusCode();
+        Assert.assertEquals(actualStatusCode, statusCode, "Unexpected response status code.");
+        LOGGER.info("Verified response status code: {}", statusCode);
     }
 
     @Then("^Print response$")
     public void printResponse() {
-        System.out.println(response.asString());
+        LOGGER.info("Response: {}", response.asString());
     }
 
-    private Object findValue(Map<String, Object> map, String keyword) {
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getKey().equals(keyword)) {
-                return entry.getValue();
-            } else if (entry.getValue() instanceof Map) {
-                Object result = findValue((Map<String, Object>) entry.getValue(), keyword);
-                if (result != null) {
-                    return result;
-                }
-            }
-        }
-        return null;
+    @Then("^Setting up of DB$")
+    public void settingUpOfDb() throws SQLException {
+        LOGGER.info("Setting up the database...");
+        connection=db.connectToDB();
     }
 
-    private Object findValueInList(List<Map<String, Object>> list, String keyword) {
-        for (Map<String, Object> map : list) {
-            Object result = findValue(map, keyword);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+    @Then("^Get the values from db$")
+    public void getDbValue() throws SQLException {
+        DbHandler.switchSchema("idw");  // Switch to the appropriate schema if necessary
+        // Create the ProjectDataFetcher and fetch the project details
+        ProjectDataFetcher dataFetcher = new ProjectDataFetcher(connection);
+        projectDataMap= dataFetcher.fetchAllProjects();
+        LOGGER.info("Values from db "+ projectDataMap);
     }
 
-    private String getResultDataType(Object value) {
-        return value.getClass().toString();
+    @Then("^Compare the values of api with db$")
+    public void compareDbValueWithApiValue() throws SQLException {
+        DbApiComparatorClass dbApiComparator=new DbApiComparatorClass();
+        dbApiComparator.compareDbApiValues("engagementCode",responseList,projectDataMap);
     }
 }
