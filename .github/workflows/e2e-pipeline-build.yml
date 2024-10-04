@@ -35,6 +35,7 @@ on:
         options:
           - regression
           - smoke
+          - api
 
 jobs:
   build:
