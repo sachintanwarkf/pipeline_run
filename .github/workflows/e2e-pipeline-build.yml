@@ -27,22 +27,59 @@ on:
         description: 'Workspace directory'
         required: true
         default: ./e2e-automation
-      suite_file:
-        type: choice
-        description: 'Test Suite'
-        required: true
-        default: regression
-        options:
-          - regression
-          - smoke
-          - api
+      test_type:
+          description: 'Type of tests to run'
+          required: true
+          default: 'api'
+          type: choice
+          options:
+            - api
+            - functional
 
 jobs:
   build:
     uses: HayGroup/kfone-common/.github/workflows/qa-automation-build-report-0.0.1.yml@main
     secrets: inherit
-    with:
-      environment: ${{ inputs.environment }}
-      region: ${{ inputs.region }}
-      workspace: ${{ inputs.workspace }}
-      suite_file: ${{ inputs.suite_file }}
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Install Maven
+      run: sudo apt-get install maven
+
+    - name: Install Node.js (if needed)
+      run: sudo apt-get install nodejs
+
+    - name: Navigate to project directory
+      run: cd e2e-automation
+
+    - name: Install Maven dependencies
+      run: mvn install
+      working-directory: e2e-automation
+
+    - name: Run API Tests
+      if: ${{ github.event.inputs.test_type == 'api' }}
+      run: mvn test -Papi
+      working-directory: e2e-automation
+
+    - name: Run Functional Tests
+      if: ${{ github.event.inputs.test_type == 'functional' }}
+      run: mvn test -Pfunctional
+      working-directory: e2e-automation
