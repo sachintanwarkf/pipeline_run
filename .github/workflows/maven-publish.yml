@@ -1,4 +1,4 @@
-name: e2e-qa-automation
+name: new-e2e-qa-automation
 
 on:
   workflow_dispatch:
@@ -47,7 +47,6 @@ on:
 
 jobs:
   build:
-    uses: HayGroup/kfone-common/.github/workflows/qa-automation-build-report-0.0.1.yml@main
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}
