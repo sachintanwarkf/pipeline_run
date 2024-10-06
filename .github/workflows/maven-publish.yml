@@ -73,9 +73,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build  # Ensure that the build job completes before running tests
     steps:
-      - name: Navigate to workspace directory
-        run: cd e2e-automation  # Change directory to the workspace
-
       - name: Run API Tests
         if: ${{ github.event.inputs.test_type == 'api' }}
         run: mvn test -Papi
