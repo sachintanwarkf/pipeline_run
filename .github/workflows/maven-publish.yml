@@ -48,7 +48,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    secrets: inherit
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -80,7 +79,9 @@ jobs:
       - name: Run API Tests
         if: ${{ github.event.inputs.test_type == 'api' }}
         run: mvn test -Papi
+        working-directory: e2e-automation  # Ensure this is the correct directory
 
       - name: Run Functional Tests
         if: ${{ github.event.inputs.test_type == 'functional' }}
         run: mvn test -Pfunctional
+        working-directory: e2e-automation  # Ensure this is the correct directory
