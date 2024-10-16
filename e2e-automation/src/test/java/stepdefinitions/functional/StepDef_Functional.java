@@ -81,6 +81,7 @@ public class StepDef_Functional {
         }
     }
 
+
     @Then("^User verify the \"([^\"]*)\" is (CLICKABLE) on \"([^\"]*)\"$")
     public void verify_element_ISClickable(String elementName, String visibility, PageEnum pageName) throws IllegalAccessException {
         BasePage basePage = PageInstanceFactory.getPageInstance(pageName, baseStepDef.driver);  // Use the driver from BaseStepDef
@@ -118,6 +119,8 @@ public class StepDef_Functional {
             throw new IllegalArgumentException("Invalid visibility state: " + visibility);
         }
     }
+
+
 
     @Then("^User compare the \"([^\"]*)\" is (MATCHED|UNMATCHED|PARTIALLY-MATCHED) with \"([^\"]*)\" on \"([^\"]*)\"$")
     public void verify_element_text_comparision(String expectedText, String visibility, String elementName, PageEnum pageName) throws IllegalAccessException {

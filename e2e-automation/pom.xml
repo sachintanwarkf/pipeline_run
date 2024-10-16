@@ -238,9 +238,14 @@
 				<version>3.0.0-M5</version>
 				<configuration>
 					<includes>
+						<suitXmlFiles>
+							<suitXmlFile>
+								sampleTestSuite.xml
+							</suitXmlFile>
+						</suitXmlFiles>
 						<include>**/ApiRunnerClass.java</include>
 						<include>**/FunctionalRunner.java</include>
-					</includes>
+						</includes>
 					<excludes>
 						<!-- Exclude all runner classes if not needed -->
 					</excludes>

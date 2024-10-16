@@ -31,7 +31,7 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath="//label[@for='select']")
     WebElement Label_KFSelect;
 
-        @FindBy(xpath = "//input[@id=\"assess\"]")
+    @FindBy(xpath = "//input[@id=\"assess\"]")
     WebElement ChkBox_KFAssess;
 
     @FindBy(xpath="//label[@for='assess']")
@@ -43,19 +43,19 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath = "//p[@class='active-text']")
     WebElement Label_ActiveStatus;
 
-    @FindBy(xpath = "//p[@class='engagement-code-txt']")
+    @FindBy(xpath = "//div[@class='engagement-code-txt']")
     WebElement Label_EngagementCode;
 
-    @FindBy(xpath = "//p[@class='participant']")
+    @FindBy(xpath = "//div[@class='participant']")
     WebElement Label_NumberOfParticipants;
 
-    @FindBy(xpath = "//span[.='3 billable ']")
+    @FindBy(xpath = "//*[contains(text(),' billable')]")
     WebElement Label_Billable;
 
-    @FindBy(xpath = "//span[.='1 non-billable']")
+    @FindBy(xpath = "//*[contains(text(),'non-billable')]")
     WebElement Label_NonBillable;
 
-    @FindBy(xpath = "//p[@class='potential-text']")
+    @FindBy(xpath = "//div[@class='potential-text']")
     WebElement Label_PontentialLevel;
 
     @FindBy(xpath = "//span[@class='date-txt']")
@@ -64,7 +64,7 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath = "//div[.='KF Entry']")
     WebElement Label_ProjectType;
 
-        @FindBy(xpath = "//div[.='KF Assess']")
+    @FindBy(xpath = "//div[.='KF Assess']")
     WebElement Label_ProductType;
 
     @FindBy(xpath = "(//span[@class=\"date-txt\"])[2]")
@@ -72,6 +72,8 @@ public class ProjectPage extends BasePage {
 
     @FindBy(xpath = "(//a[@id=\"manageProject\"])[1]")
     WebElement  Link_ViewDetails;
+
+
 
 
 }

@@ -1,7 +1,7 @@
 Feature: To verify Project Page
   Background:
     Given Initialize the "chrome" browser
-    Given User open the url "http://insights.int.kfone-dev.com/"
+    Given User open the url "https://analytics.kornferrytalent-dev.com/"
 
   Scenario: To verify after logging into Assessment Page
     Then User verify the "Tab_Consumption" is VISIBLE on "PROJECT_PAGE"
