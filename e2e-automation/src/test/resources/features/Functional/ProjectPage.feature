@@ -1,9 +1,9 @@
 Feature: To verify Project Page
-  Background:
-    Given Initialize the "chrome" browser
-    Given User open the url "https://analytics.kornferrytalent-dev.com/"
+
 
   Scenario: To verify after logging into Assessment Page
+    Given Initialize the "chrome" browser
+    Given User open the url "https://analytics.kornferrytalent-dev.com/"
     Then User verify the "Tab_Consumption" is VISIBLE on "PROJECT_PAGE"
     Then User clicks "Tab_Project" on "PROJECT_PAGE"
 
@@ -26,4 +26,6 @@ Feature: To verify Project Page
     Then User verify the "Label_ProjectType" is VISIBLE on "PROJECT_PAGE"
     Then User verify the "Label_ProductType" is VISIBLE on "PROJECT_PAGE"
     Then User verify the "Label_AddOns" is VISIBLE on "PROJECT_PAGE"
-    Then User clicks "Link_ViewDetails" on "PROJECT_PAGE"
+
+  Scenario: To Get all data from project page in corresponding list
+    Then User copies data of "NumberOfContainer" from "PROJECT_PAGE"

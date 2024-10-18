@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.List;
+
 public class ProjectPage extends BasePage {
     public ProjectPage(WebDriver driver)
     {
@@ -16,7 +18,7 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath = "//a[.=\"Consumption\"]")
     WebElement Tab_Consumption;
 
-    @FindBy(id = "Projects-1")
+    public @FindBy(xpath = "//a[@id='Projects-1']")
     WebElement Tab_Project;
 
     @FindBy(xpath = "//div[@class=\"card-container\"]")
@@ -73,6 +75,8 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath = "(//a[@id=\"manageProject\"])[1]")
     WebElement  Link_ViewDetails;
 
+    @FindBy(xpath = "//div[@class='card-container']")
+    List<WebElement> NumberOfContainer;
 
 
 

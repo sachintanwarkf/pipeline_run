@@ -9,12 +9,15 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.openqa.selenium.WebElement;
 
+import javax.lang.model.element.Element;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StepDef_Functional {
 
     public BaseStepDef baseStepDef;
+
 
     public StepDef_Functional(){
         baseStepDef = new BaseStepDef();
@@ -35,7 +38,8 @@ public class StepDef_Functional {
     }
 
     @Then("^User clicks \"([^\"]*)\" on \"([^\"]*)\"$")
-    public void clicks_element(String elementName, PageEnum pageName) throws IllegalAccessException {
+    public void clicks_element(String elementName, PageEnum pageName) throws IllegalAccessException, InterruptedException {
+        Thread.sleep(5000);
         BasePage basePage = PageInstanceFactory.getPageInstance(pageName, baseStepDef.driver);  // Use the driver from BaseStepDef
         WebElement element = baseStepDef.getElementUsingReflection(basePage, elementName);
         basePage.click(element);

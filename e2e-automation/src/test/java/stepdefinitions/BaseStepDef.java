@@ -153,6 +153,7 @@ public class BaseStepDef {
     }
     private <TPage extends BasePage> List<Field> getFieldsFromPageObjectOrItsBaseClass(TPage pageObject, String fieldName) {
         List<Field> fields = new ArrayList<>();
+        addFields(fields, pageObject.getClass(), fieldName);
         // Add fields from the current class
         // Add fields from the superclass
         Class<?> parentClass = pageObject.getClass().getSuperclass();
