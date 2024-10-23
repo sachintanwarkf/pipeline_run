@@ -30,14 +30,14 @@ public class ProjectPage extends BasePage {
     @FindBy(xpath = "//input[@id=\"select\"]")
     WebElement ChkBox_KFSelect;
 
-    @FindBy(xpath="//label[@for='select']")
-    WebElement Label_KFSelect;
+   public @FindBy(xpath="//label[@for='select']")
+    WebElement KFSelect;
 
     @FindBy(xpath = "//input[@id=\"assess\"]")
     WebElement ChkBox_KFAssess;
 
-    @FindBy(xpath="//label[@for='assess']")
-    WebElement Label_KFAssess;
+   public @FindBy(xpath="//label[@for='assess']")
+    WebElement KFAssess;
 
     @FindBy(xpath = "//div[@id='serviceType']")
     WebElement Label_Administered;

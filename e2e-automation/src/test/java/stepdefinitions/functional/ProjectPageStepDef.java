@@ -14,6 +14,7 @@ import stepdefinitions.BaseStepDef;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -152,4 +153,85 @@ public class ProjectPageStepDef {
 
 
     }
+
+    void clear()
+    {
+        ProjectContainer.clear();
+        projectNameList.clear();
+        administeredList.clear();
+        activeList.clear();
+        engagementCodeList.clear();
+        numberOfParticipantsList.clear();
+        numberOfBillableList.clear();
+        NumberOfNonBillableList.clear();
+        potentialLevelList.clear();
+        createdDateList.clear();
+        projectTypeList.clear();
+        productTypeList.clear();
+        addOnsList.clear();
+    }
+
+    @Then("^User copies data after clicking checkbox \"([^\"]*)\" from \"([^\"]*)\"$")
+    public void user_copy_after_clicking_checkbox(String elementName, PageEnum pageName) throws IllegalAccessException, InterruptedException {
+        Thread.sleep(5000);
+        clear();
+
+        if(Objects.equals(elementName, pg.KFSelect.getText()))
+        {
+            for(int i=3;i<=ProjectContainer.size()*3;i=i+3)
+            {
+                WebElement element1 = driver.findElement(By.xpath("(//div[@class=\"pill-item square \"])["+i+"]"));
+                String name = element1.getText();
+                productTypeList.add(name);
+            }
+        }
+        for (String string:productTypeList)
+        {
+            String valueToBeThere="elementName";
+            Assert.assertEquals("This list dose not only contains "+elementName,valueToBeThere,elementName);
+        }
+        productTypeList.clear();
+
+    }
+
+    @Then("^User copies data after clicking checkbox \"([^\"]*)\" and \"([^\"]*)\" from \"([^\"]*)\"$")
+    public void user_copy_after_clicking_checkbox(String elementName, String elementName2,PageEnum pageName)throws IllegalAccessException, InterruptedException {
+        Thread.sleep(5000);
+        clear();
+        user_copy_data_to_List(elementName,pageName);
+
+    }
+
+    @Then("^User copies data after unselecting checkbox \"([^\"]*)\" from \"([^\"]*)\"$")
+    public void user_copy_after_unselecting_checkbox(String elementName, PageEnum pageName) throws IllegalAccessException, InterruptedException {
+        Thread.sleep(5000);
+        clear();
+        String element;
+        if(elementName=="KFSelect")
+        {
+            element="KFAccess";
+        }
+        else {
+            element="KFSelect";
+        }
+        if(Objects.equals(element, pg.KFSelect.getText()))
+        {
+            for(int i=3;i<=ProjectContainer.size()*3;i=i+3)
+            {
+                WebElement element1 = driver.findElement(By.xpath("(//div[@class=\"pill-item square \"])["+i+"]"));
+                String name = element1.getText();
+                productTypeList.add(name);
+            }
+        }
+        for (String string:productTypeList)
+        {
+            String valueToBeThere="elementName";
+            Assert.assertEquals("This list dose not only contains "+element,valueToBeThere,elementName);
+        }
+        productTypeList.clear();
+
+    }
+
+
+
 }
